@@ -27,10 +27,26 @@ namespace MoegirlSpider
 
             HtmlWeb web = new HtmlWeb();
             HtmlDocument doc = web.Load(@"https://mzh.moegirl.org.cn/zh-hans/日本2022年夏季动画");
-            HtmlNodeCollection? titleList = doc?.DocumentNode?.SelectNodes(@"//div[@class='mw-parser-output']/h2/span[@class='mw-headline']");
-            titleList?.RemoveAt(0);
-            titleList?.RemoveAt(titleList.Count - 1);
-            HtmlNodeCollection? linkList = doc?.DocumentNode?.SelectNodes(@"//div[@class='mw-parser-output']//dl/dd/a");
+            HtmlNodeCollection? nameList = doc?.DocumentNode?.SelectNodes(@"//div[@class='mw-parser-output']/h2/span[@class='mw-headline']");
+            nameList?.RemoveAt(0);
+            nameList?.RemoveAt(nameList.Count - 1);
+
+            for (int i = 0; i < nameList?.Count; ++i)
+            {
+                Data data = new Data();
+
+                string name = nameList[i].InnerText;
+                data.Name = name;
+                HtmlNode? link = doc?.DocumentNode?.SelectNodes(@"//div[@class='mw-parser-output']/div[@class='mf-section-" + (i + 2) + " collapsible-block']/dl/dd/a")[0];
+
+                string? path = link?.Attributes["href"].Value;
+                HtmlDocument animeDoc = web.Load(@"https://mzh.moegirl.org.cn/zh-hans" + path);
+
+                string? origName = animeDoc?.DocumentNode?.SelectNodes(@"//table/tbody/tr/td/span[@lang='ja']")[0].InnerText;
+                data.OriginalName = origName;
+
+
+            }
         }
     }
 }
