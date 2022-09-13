@@ -35,17 +35,19 @@ namespace MoegirlSpider
             {
                 Data data = new Data();
 
-                string name = nameList[i].InnerText;
+                string name = nameList[i].InnerText.Trim();
                 data.Name = name;
                 HtmlNode? link = doc?.DocumentNode?.SelectNodes(@"//div[@class='mw-parser-output']/div[@class='mf-section-" + (i + 2) + " collapsible-block']/dl/dd/a")[0];
 
-                string? path = link?.Attributes["href"].Value;
+                string? path = link?.Attributes["href"].Value.Trim();
                 HtmlDocument animeDoc = web.Load(@"https://mzh.moegirl.org.cn/zh-hans" + path);
 
-                string? origName = animeDoc?.DocumentNode?.SelectNodes(@"//table/tbody/tr/td/span[@lang='ja']")[0].InnerText;
+                string? origName = animeDoc?.DocumentNode?.SelectNodes(@"//table/tbody/tr/td/span[@lang='ja']")[0].InnerText.Trim();
                 data.OriginalName = origName;
 
-
+                data.Introduction = animeDoc?.DocumentNode?.SelectNodes(@"//div[@class='poem']")[0].InnerText.Trim();
+                data.Staff = animeDoc?.DocumentNode?.SelectNodes(@"//h4/span[@id='STAFF']/../following::ul")[0].InnerText.Trim();
+                data.Cast = animeDoc?.DocumentNode?.SelectNodes(@"//h4/span[@id='CAST']/../following::ul")[0].InnerText.Trim();
             }
         }
     }
