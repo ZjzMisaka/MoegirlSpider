@@ -5,8 +5,26 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MoegirlSpider"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        Title="MainWindow" Height="750" Width="1300">
+    <StackPanel>
+        <TextBox Name="Name" BorderBrush="Black"></TextBox>
+        <TextBox Name="OriginalName" BorderBrush="Black"></TextBox>
+        <TextBox Name="Type" BorderBrush="Black"></TextBox>
+        <TextBox Name="Introduction" Height="60" TextWrapping="Wrap" AcceptsReturn="True" BorderBrush="Black"></TextBox>
+        <TextBox Name="Staff" Height="60" TextWrapping="Wrap" AcceptsReturn="True" BorderBrush="Black"></TextBox>
+        <TextBox Name="Cast" Height="60" TextWrapping="Wrap" AcceptsReturn="True" BorderBrush="Black"></TextBox>
+        <TextBox Name="TotalEpisodes" BorderBrush="Black"></TextBox>
+        <TextBox Name="ProductionCompany" BorderBrush="Black"></TextBox>
+        <TextBox Name="OpeningSong" Height="60" TextWrapping="Wrap" AcceptsReturn="True" BorderBrush="Black"></TextBox>
+        <TextBox Name="EndingSong" Height="60" TextWrapping="Wrap" AcceptsReturn="True" BorderBrush="Black"></TextBox>
+        <TextBox Name="CharactorSong" Height="60" TextWrapping="Wrap" AcceptsReturn="True" BorderBrush="Black"></TextBox>
+        <TextBox Name="InsertSong" Height="60" TextWrapping="Wrap" AcceptsReturn="True" BorderBrush="Black"></TextBox>
+        <TextBox Name="Achievement" Height="60" TextWrapping="Wrap" AcceptsReturn="True" BorderBrush="Black"></TextBox>
+        <TextBox Name="Other" Height="60" TextWrapping="Wrap" AcceptsReturn="True" BorderBrush="Black"></TextBox>
+        <TextBox Name="PremiereDate" BorderBrush="Black"></TextBox>
+        <TextBox Name="TitleImgExternalLink" BorderBrush="Black"></TextBox>
+        <TextBox Name="OfficialWebsite" BorderBrush="Black"></TextBox>
 
-    </Grid>
+        <Button Name="Start" Click="Start_Click" Content="Next"></Button>
+    </StackPanel>
 </Window>
