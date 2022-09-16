@@ -77,7 +77,7 @@
         <TextBox Grid.Row="13" Grid.Column="1" Name="Other" Height="60" TextWrapping="Wrap" AcceptsReturn="True" BorderBrush="Black"></TextBox>
 
         <TextBlock Grid.Row="14" Grid.Column="0" Text="PremiereDate"></TextBlock>
-        <TextBox Grid.Row="14" Grid.Column="1" Name="PremiereDate" Height="20" BorderBrush="Black"></TextBox>
+        <TextBox Grid.Row="14" Grid.Column="1" Name="PremiereDate" Height="20" BorderBrush="Black" TextChanged="PremiereDate_TextChanged"></TextBox>
 
         <TextBlock Grid.Row="15" Grid.Column="0" Text="TitleImgExternalLink"></TextBlock>
         <TextBox Grid.Row="15" Grid.Column="1" Name="TitleImgExternalLink" Height="20" BorderBrush="Black"></TextBox>

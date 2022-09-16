@@ -1,4 +1,6 @@
-﻿using HtmlAgilityPack;
+﻿using CustomizableMessageBox;
+using HtmlAgilityPack;
+using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -50,7 +52,13 @@ namespace MoegirlSpider
         private void Start_Click(object sender, RoutedEventArgs e)
         {
             if (index >= 0)
-            { 
+            {
+                if (!Check())
+                {
+                    CustomizableMessageBox.MessageBox.Show(Prefab.GetPropertiesSetter(PropertiesSetterName.Black), "名字, 介绍, 工作人员, 声优表, 制作公司, 首播日期不能为空");
+                    return;
+                }
+
                 // insert sql
             }
 
@@ -94,6 +102,18 @@ namespace MoegirlSpider
             string? name = nameList?[index].InnerText.Trim();
             data.Name = name;
             Name.Text = data.Name;
+
+            HtmlNodeCollection? officialWebsiteNodeCollection = nameList?[index].SelectNodes(@"../following::div");
+            if (officialWebsiteNodeCollection != null && officialWebsiteNodeCollection.Count > 0)
+            {
+                HtmlNode? officialWebsiteNode = officialWebsiteNodeCollection[0].SelectNodes(@"./ul/li/a")?[0];
+                string? officialWebsitePath = officialWebsiteNode?.Attributes["href"].Value.Trim();
+                data.OfficialWebsite = officialWebsitePath;
+                OfficialWebsite.Text = data.OfficialWebsite;
+            }
+
+
+
             HtmlNode? link = doc?.DocumentNode?.SelectNodes(@"//div[@class='mw-parser-output']/div[@class='mf-section-" + (index + 2) + " collapsible-block']/dl/dd/a")[0];
 
             string? path = link?.Attributes["href"].Value.Trim();
@@ -107,27 +127,24 @@ namespace MoegirlSpider
                 nowLink = pLink;
             }
             HtmlDocument? animeDoc = web?.Load(nowLink);
-            if (animeDoc.Text.StartsWith("File not found."))
+            if (animeDoc.Text.StartsWith("File not found.") || animeDoc.Text.Contains("萌百娘找不到这个页面"))
             {
-                TextBox tb = new TextBox();
+                CustomizableMessageBox.MessageBox.Show(
+                    Prefab.GetPropertiesSetter(PropertiesSetterName.Black),
+                    new List<Object> {
+                        new TextBox(), 
+                        "retry", new RoutedEventHandler((sender, eventArgs) => { 
+                            --index;
+                            CustomizableMessageBox.MessageBox.CloseNow();
+                            Next(((TextBox)CustomizableMessageBox.MessageBox.ButtonList[0]).Text);
+                        }),
+                        "skip", new RoutedEventHandler((sender, eventArgs) => {
+                            CustomizableMessageBox.MessageBox.CloseNow();
+                            Next();
+                        }),
+                        "close"
+                    }, name + " Failed", "");
 
-                Button buttonRetry = new Button();
-                buttonRetry.Content = "retry";
-                buttonRetry.Click += (s, e) =>
-                {
-                    --index;
-                    Next(((TextBox)CustomizableMessageBox.MessageBox.ButtonList[0]).Text);
-                };
-
-                Button buttonSkip = new Button();
-                buttonRetry.Content = "skip";
-                buttonSkip.Click += (s, e) =>
-                {
-                    Next();
-                };
-
-                CustomizableMessageBox.MessageBox.Show(new List<Object> { tb, buttonRetry, buttonSkip }, name + " Failed", "");
-                
                 return;
             }
 
@@ -204,6 +221,97 @@ namespace MoegirlSpider
                 }
             }
             TotalEpisodes.Text = data.TotalEpisodes;
+
+
+            HtmlNodeCollection? productionCompanyNodes = animeDoc?.DocumentNode?.SelectNodes(@"//li");
+            foreach (HtmlNode node in productionCompanyNodes)
+            {
+                if (node.InnerText.StartsWith("动画制作："))
+                {
+                    data.ProductionCompany = node.InnerText.Trim().Substring(node.InnerText.Trim().IndexOf("：") + 1);
+                    break;
+                }
+                if (String.IsNullOrWhiteSpace(data.ProductionCompany))
+                {
+                    if (node.InnerText.Contains("制作："))
+                    {
+                        data.ProductionCompany = node.InnerText.Trim().Substring(node.InnerText.Trim().IndexOf("：") + 1);
+                        break;
+                    }
+                }
+            }
+            ProductionCompany.Text = data.ProductionCompany;
+
+
+            bool premiereDateFound = false;
+            HtmlNodeCollection? premiereDateNodes = animeDoc?.DocumentNode?.SelectNodes(@"//td");
+            foreach (HtmlNode node in premiereDateNodes)
+            {
+                if (node.InnerText.Contains("首播时间"))
+                {
+                    premiereDateFound = true;
+                }
+                else if (premiereDateFound)
+                {
+                    data.PremiereDate = FormatDate(node.InnerText.Trim());
+                    break;
+                }
+            }
+            PremiereDate.Text = data.PremiereDate;
+        }
+
+        private bool Check()
+        {
+            // 名字, 介绍, 工作人员, 声优表, 制作公司, 首播日期不能为空
+            if (String.IsNullOrWhiteSpace(Name.Text) ||
+                String.IsNullOrWhiteSpace(Introduction.Text) ||
+                String.IsNullOrWhiteSpace(Staff.Text) ||
+                String.IsNullOrWhiteSpace(Cast.Text) ||
+                String.IsNullOrWhiteSpace(ProductionCompany.Text) ||
+                String.IsNullOrWhiteSpace(PremiereDate.Text))
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        /*
+         jQuery("#premiere_date").on('change', function() {
+            var newDateStr = jQuery("#premiere_date").val().replace("年", "/").replace("月", "/").replace("日", "").replace(/-/g, "/");
+            var newDateStrSplited = newDateStr.split('/');
+            if(newDateStrSplited.length == 3) {
+                if(newDateStrSplited[1].length == 1) {
+                    newDateStrSplited[1] = '0' + newDateStrSplited[1];
+                }
+                if(newDateStrSplited[2].length == 1) {
+                    newDateStrSplited[2] = '0' + newDateStrSplited[2];
+                }
+                jQuery("#premiere_date").val(newDateStrSplited[0] + '/' + newDateStrSplited[1] + '/' + newDateStrSplited[2]);
+            }
+        });
+         */
+        private string FormatDate(string date)
+        {
+            date = date.Replace("年", "/").Replace("月", "/").Replace("日", "").Replace("-", "/").Trim();
+            string[] splited = date.Split("/");
+            if (splited.Length == 3)
+            {
+                if (splited[1].Length == 1)
+                {
+                    splited[1] = "0" + splited[1];
+                }
+                if (splited[2].Length == 1)
+                {
+                    splited[2] = "0" + splited[2];
+                }
+            }
+            return String.Join("/", splited);
+        }
+
+        private void PremiereDate_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            PremiereDate.Text = FormatDate(PremiereDate.Text);
         }
     }
 }
