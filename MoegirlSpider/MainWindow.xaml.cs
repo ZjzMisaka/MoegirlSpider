@@ -112,7 +112,23 @@ namespace MoegirlSpider
                 OfficialWebsite.Text = data.OfficialWebsite;
             }
 
-
+            string outStaff = "";
+            string outCast = "";
+            HtmlNodeCollection? staffAndCastNodeCollection = nameList?[index].SelectNodes(@"../following::h3");
+            if (staffAndCastNodeCollection != null && staffAndCastNodeCollection.Count > 0)
+            {
+                foreach (HtmlNode node in staffAndCastNodeCollection)
+                {
+                    if (node.InnerText == "STAFF")
+                    {
+                        outStaff = node.SelectNodes(@"./following::div")[0].InnerText.Trim();
+                    }
+                    else if (node.InnerText == "CAST")
+                    {
+                        outCast = node.SelectNodes(@"./following::div")[0].InnerText.Trim();
+                    }
+                }
+            }
 
             HtmlNode? link = doc?.DocumentNode?.SelectNodes(@"//div[@class='mw-parser-output']/div[@class='mf-section-" + (index + 2) + " collapsible-block']/dl/dd/a")[0];
 
@@ -153,19 +169,64 @@ namespace MoegirlSpider
             OriginalName.Text = data.OriginalName;
 
             HtmlNodeCollection? introductionNodes = animeDoc?.DocumentNode?.SelectNodes(@"//h2");
-            foreach (HtmlNode node in introductionNodes)
+            if (introductionNodes != null)
             {
-                if (node.InnerText.Contains("剧情简介"))
+                foreach (HtmlNode node in introductionNodes)
                 {
-                    data.Introduction = node.SelectNodes(@"./following::div")[0].InnerText.Trim();
-                    break;
-                }
-                if (String.IsNullOrWhiteSpace(data.Introduction))
-                {
-                    if (node.InnerText.Contains("剧情"))
+                    if (node.InnerText.Contains("剧情简介"))
                     {
                         data.Introduction = node.SelectNodes(@"./following::div")[0].InnerText.Trim();
                         break;
+                    }
+                }
+            }
+            if (String.IsNullOrWhiteSpace(data.Introduction))
+            {
+                HtmlNodeCollection? introductionNodesH3 = animeDoc?.DocumentNode?.SelectNodes(@"//h3");
+                if (introductionNodesH3 != null)
+                {
+                    foreach (HtmlNode node in introductionNodesH3)
+                    {
+                        if (node.InnerText.Contains("剧情简介"))
+                        {
+                            data.Introduction = node.SelectNodes(@"./following::div")[0].InnerText.Trim();
+                            break;
+                        }
+                    }
+                }
+            }
+            if (String.IsNullOrWhiteSpace(data.Introduction))
+            {
+                if (introductionNodes != null)
+                {
+                    foreach (HtmlNode node in introductionNodes)
+                    {
+                        if (String.IsNullOrWhiteSpace(data.Introduction))
+                        {
+                            if (node.InnerText.Trim().StartsWith("剧情"))
+                            {
+                                data.Introduction = node.SelectNodes(@"./following::div")[0].InnerText.Trim();
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            if (String.IsNullOrWhiteSpace(data.Introduction))
+            {
+                HtmlNodeCollection? introductionNodesH3 = animeDoc?.DocumentNode?.SelectNodes(@"//h3");
+                if (introductionNodesH3 != null)
+                {
+                    foreach (HtmlNode node in introductionNodesH3)
+                    {
+                        if (String.IsNullOrWhiteSpace(data.Introduction))
+                        {
+                            if (node.InnerText.Trim().StartsWith("剧情"))
+                            {
+                                data.Introduction = node.SelectNodes(@"./following::div")[0].InnerText.Trim();
+                                break;
+                            }
+                        }
                     }
                 }
             }
@@ -184,6 +245,10 @@ namespace MoegirlSpider
             }
             catch
             { }
+            if (String.IsNullOrWhiteSpace(data.Staff) || data.Staff.Split("\n").Length < outStaff.Split("\n").Length)
+            {
+                data.Staff = outStaff;
+            }
             Staff.Text = data.Staff;
 
             try
@@ -192,6 +257,10 @@ namespace MoegirlSpider
             }
             catch
             { }
+            if (String.IsNullOrWhiteSpace(data.Cast) || data.Cast.Split("\n").Length < outCast.Split("\n").Length)
+            {
+                data.Cast = outCast;
+            }
             Cast.Text = data.Cast;
 
             HtmlNodeCollection? totalEpisodesNodes = animeDoc?.DocumentNode?.SelectNodes(@"//td");
