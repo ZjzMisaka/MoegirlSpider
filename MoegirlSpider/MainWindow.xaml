@@ -41,7 +41,13 @@
         <TextBox Grid.Row="1" Grid.Column="1" Name="OriginalName" Height="20" BorderBrush="Black"></TextBox>
 
         <TextBlock Grid.Row="2" Grid.Column="0" Text="Type"></TextBlock>
-        <TextBox Grid.Row="2" Grid.Column="1" Name="Type" Height="20" BorderBrush="Black"></TextBox>
+        <ComboBox Grid.Row="2" Grid.Column="1" Name="Type" Height="20" BorderBrush="Black">
+            <ComboBoxItem Content="TV版"></ComboBoxItem>
+            <ComboBoxItem Content="剧场版"></ComboBoxItem>
+            <ComboBoxItem Content="OVA"></ComboBoxItem>
+            <ComboBoxItem Content="OAD"></ComboBoxItem>
+            <ComboBoxItem Content="WEB"></ComboBoxItem>
+        </ComboBox>
 
         <TextBlock Grid.Row="3" Grid.Column="0" Text="Introduction"></TextBlock>
         <TextBox Grid.Row="3" Grid.Column="1" Name="Introduction" VerticalAlignment="Stretch" TextWrapping="Wrap" AcceptsReturn="True" BorderBrush="Black"></TextBox>

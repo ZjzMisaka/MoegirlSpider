@@ -311,22 +311,60 @@ namespace MoegirlSpider
             }
             ProductionCompany.Text = data.ProductionCompany;
 
+            HtmlNodeCollection? musicNodes = animeDoc?.DocumentNode?.SelectNodes(@"//h4/span[text() = '相关音乐' ]");
+            HtmlNode musicNode = null;
+            string musicStr = "";
+            if (musicNodes != null && musicNodes.Count > 0)
+            {
+                musicNode = musicNodes[0].ParentNode;
+            }
+            while (musicNode != null && musicNode.NextSibling != null && musicNode.NextSibling.Name != "h4" && musicNode.NextSibling.Name != "h3" && musicNode.NextSibling.Name != "h2")
+            {
+                musicNode = musicNode.NextSibling;
+                if (!String.IsNullOrWhiteSpace(musicStr))
+                {
+                    musicStr = musicStr + "\n";
+                }
+                musicStr = musicStr + musicNode.InnerText;
+            }
+            string newMusicStr = "";
+            foreach (string str in musicStr.Trim().Split("\n"))
+            {
+                if (String.IsNullOrWhiteSpace(str.Trim()))
+                {
+                    continue;
+                }
+                if (!String.IsNullOrWhiteSpace(newMusicStr))
+                {
+                    newMusicStr = newMusicStr + "\n";
+                }
+                newMusicStr = newMusicStr + str.Trim();
+            }
+
+            OpeningSong.Text = newMusicStr;
+            EndingSong.Text = newMusicStr;
+            CharactorSong.Text = newMusicStr;
+            InsertSong.Text = newMusicStr;
+
 
             bool premiereDateFound = false;
             HtmlNodeCollection? premiereDateNodes = animeDoc?.DocumentNode?.SelectNodes(@"//td");
-            foreach (HtmlNode node in premiereDateNodes)
+            if (premiereDateNodes != null)
             {
-                if (node.InnerText.Contains("首播时间"))
+                foreach (HtmlNode node in premiereDateNodes)
                 {
-                    premiereDateFound = true;
+                    if (node.InnerText.Contains("首播时间"))
+                    {
+                        premiereDateFound = true;
+                    }
+                    else if (premiereDateFound)
+                    {
+                        data.PremiereDate = FormatDate(node.InnerText.Trim());
+                        break;
+                    }
                 }
-                else if (premiereDateFound)
-                {
-                    data.PremiereDate = FormatDate(node.InnerText.Trim());
-                    break;
-                }
+                PremiereDate.Text = data.PremiereDate;
             }
-            PremiereDate.Text = data.PremiereDate;
         }
 
         private bool Check()
