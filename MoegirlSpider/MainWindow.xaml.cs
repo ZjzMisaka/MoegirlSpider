@@ -1,6 +1,7 @@
 ﻿using CustomizableMessageBox;
 using HtmlAgilityPack;
 using Microsoft.VisualBasic;
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -43,10 +44,66 @@ namespace MoegirlSpider
                 webReq.Timeout = 999999999; // number of milliseconds
                 return true;
             };
-            doc = web.Load(@"https://mzh.moegirl.org.cn/zh-hans/日本2022年夏季动画");
+            doc = web.Load(@"https://mzh.moegirl.org.cn/zh-hans/日本2022年春季动画");
             nameList = doc?.DocumentNode?.SelectNodes(@"//div[@class='mw-parser-output']/h2/span[@class='mw-headline']");
             nameList?.RemoveAt(0);
             nameList?.RemoveAt(nameList.Count - 1);
+        }
+
+        private MySqlConnection GetConn()
+        {
+            MySqlConnectionStringBuilder conn_string = new MySqlConnectionStringBuilder();
+            MySqlConnection conn = new MySqlConnection(conn_string.ToString());
+
+            return conn;
+        }
+
+        private bool CheckDbExist(string name)
+        {
+            MySqlConnection conn = GetConn();
+            try
+            {
+                conn.Open();
+                string sql = "";
+                MySqlCommand cmd = new MySqlCommand(sql, conn);
+                MySqlDataReader rdr = cmd.ExecuteReader();
+                if (rdr.Read())
+                {
+                    if (rdr.GetInt32(0) == 0)
+                    {
+                        conn.Close();
+                        return false;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                CustomizableMessageBox.MessageBox.Show("select failed. \n" + ex.Message);
+            }
+            finally
+            {
+                conn.Close();
+            }
+            return true;
+        }
+
+        private string ConnectValues(params string[] str)
+        {
+            for (int i = 0; i < str.Count(); ++i)
+            {
+                str[i] = str[i].Replace("\\", "\\\\").Replace("'", "\\'").Replace("\"", "\\\"");
+            }
+            return "(" + String.Join(", ", str) + ")";
+        }
+
+        private string EmptyToNull(string str)
+        {
+            if (String.IsNullOrWhiteSpace(str))
+            {
+                return null;
+            }
+
+            return str;
         }
 
         private void Start_Click(object sender, RoutedEventArgs e)
@@ -55,19 +112,78 @@ namespace MoegirlSpider
             {
                 if (!Check())
                 {
-                    CustomizableMessageBox.MessageBox.Show(Prefab.GetPropertiesSetter(PropertiesSetterName.Black), "名字, 介绍, 工作人员, 声优表, 制作公司, 首播日期不能为空");
                     return;
                 }
 
-                // insert sql
+                MySqlConnection conn = GetConn();
+                try
+                {
+                    conn.Open();
+                    string sql = "");
+                    MySqlCommand cmd = new MySqlCommand(sql, conn);
+                    cmd.Parameters.AddWithValue("@P1", EmptyToNull(Name.Text));
+                    cmd.Parameters.AddWithValue("@P2", EmptyToNull(OriginalName.Text));
+                    cmd.Parameters.AddWithValue("@P3", EmptyToNull(Type.SelectedIndex.ToString()));
+                    cmd.Parameters.AddWithValue("@P4", EmptyToNull(Introduction.Text));
+                    cmd.Parameters.AddWithValue("@P5", EmptyToNull(Staff.Text));
+                    cmd.Parameters.AddWithValue("@P6", EmptyToNull(Cast.Text));
+                    cmd.Parameters.AddWithValue("@P7", EmptyToNull(TotalEpisodes.Text));
+                    cmd.Parameters.AddWithValue("@P8", EmptyToNull(ProductionCompany.Text));
+                    cmd.Parameters.AddWithValue("@P9", EmptyToNull(OpeningSong.Text));
+                    cmd.Parameters.AddWithValue("@P10", EmptyToNull(EndingSong.Text));
+                    cmd.Parameters.AddWithValue("@P11", EmptyToNull(CharactorSong.Text));
+                    cmd.Parameters.AddWithValue("@P12", EmptyToNull(InsertSong.Text));
+                    cmd.Parameters.AddWithValue("@P13", EmptyToNull(Achievement.Text));
+                    cmd.Parameters.AddWithValue("@P14", EmptyToNull(Other.Text));
+                    cmd.Parameters.AddWithValue("@P15", EmptyToNull(PremiereDate.Text));
+                    cmd.Parameters.AddWithValue("@P16", EmptyToNull(TitleImgExternalLink.Text));
+                    cmd.Parameters.AddWithValue("@P17", EmptyToNull(OfficialWebsite.Text));
+                    int count = cmd.ExecuteNonQuery();
+                    if (count == 0)
+                    {
+                        throw new Exception("count = 0");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    CustomizableMessageBox.MessageBox.Show("insert failed. \n" + ex.Message);
+                }
+                finally
+                {
+                    conn.Close();
+                }
             }
 
-            Next();
+            string name = GetNextName();
+            if (String.IsNullOrWhiteSpace(name))
+            {
+                return;
+            }
+            if (CheckDbExist(name))
+            {
+                Next(false, name);
+            }
+            else 
+            {
+                Next(true, name);
+            }
         }
 
         private void Skip_Click(object sender, RoutedEventArgs e)
         {
-            Next();
+            string name = GetNextName();
+            if (String.IsNullOrWhiteSpace(name))
+            {
+                return;
+            }
+            if(CheckDbExist(name))
+            {
+                Next(false, name);
+            }
+            else
+            {
+                Next(true, name);
+            }
         }
 
         private void Open_Click(object sender, RoutedEventArgs e)
@@ -80,26 +196,41 @@ namespace MoegirlSpider
             Process.Start(psi);
         }
 
-        private void Next(string pLink = "")
+        private string GetNextName()
+        {
+            ++index;
+
+            if (index >= nameList?.Count)
+            {
+                return "";
+            }
+            string? name = nameList?[index].InnerText.Trim();
+
+            return name;
+        }
+
+        private void Next(bool isInsert, string name, string pLink = "")
         {
             foreach (UIElement ele in MainGrid.Children)
             {
                 if (ele.GetType() == typeof(TextBox))
                 {
                     ((TextBox)ele).Text = "";
+                    Type.SelectedIndex = 0;
                 }
             }
 
-            ++index;
-
-            if (index >= nameList?.Count)
+            if (isInsert)
             {
-                return;
+                Status.Text = "Insert";
+            }
+            else
+            {
+                Status.Text = "Update";
             }
 
             Data data = new Data();
 
-            string? name = nameList?[index].InnerText.Trim();
             data.Name = name;
             Name.Text = data.Name;
 
@@ -150,13 +281,24 @@ namespace MoegirlSpider
                     new List<Object> {
                         new TextBox(), 
                         "retry", new RoutedEventHandler((sender, eventArgs) => { 
-                            --index;
                             CustomizableMessageBox.MessageBox.CloseNow();
-                            Next(((TextBox)CustomizableMessageBox.MessageBox.ButtonList[0]).Text);
+                            Next(isInsert, name, ((TextBox)CustomizableMessageBox.MessageBox.ButtonList[0]).Text);
                         }),
                         "skip", new RoutedEventHandler((sender, eventArgs) => {
                             CustomizableMessageBox.MessageBox.CloseNow();
-                            Next();
+                            string name = GetNextName();
+                            if (String.IsNullOrWhiteSpace(name))
+                            {w
+                                return;
+                            }
+                            if(CheckDbExist(name))
+                            {
+                                Next(false, name);
+                            }
+                            else
+                            {
+                                Next(true, name);
+                            }
                         }),
                         "close"
                     }, name + " Failed", "");
@@ -164,9 +306,13 @@ namespace MoegirlSpider
                 return;
             }
 
-            string? origName = animeDoc?.DocumentNode?.SelectNodes(@"//table/tbody/tr/td/span[@lang='ja']")[0].InnerText.Trim();
-            data.OriginalName = origName;
-            OriginalName.Text = data.OriginalName;
+            HtmlNodeCollection? originalNameNodes = animeDoc?.DocumentNode?.SelectNodes(@"//table/tbody/tr/td/span[@lang='ja']");
+            if (originalNameNodes != null && originalNameNodes.Count > 0)
+            {
+                string? origName = originalNameNodes[0].InnerText.Trim();
+                data.OriginalName = origName;
+                OriginalName.Text = data.OriginalName;
+            }
 
             HtmlNodeCollection? introductionNodes = animeDoc?.DocumentNode?.SelectNodes(@"//h2");
             if (introductionNodes != null)
@@ -302,6 +448,14 @@ namespace MoegirlSpider
                 }
                 if (String.IsNullOrWhiteSpace(data.ProductionCompany))
                 {
+                    if (node.InnerText.Contains("制作公司："))
+                    {
+                        data.ProductionCompany = node.InnerText.Trim().Substring(node.InnerText.Trim().IndexOf("：") + 1);
+                        break;
+                    }
+                }
+                if (String.IsNullOrWhiteSpace(data.ProductionCompany))
+                {
                     if (node.InnerText.Contains("制作："))
                     {
                         data.ProductionCompany = node.InnerText.Trim().Substring(node.InnerText.Trim().IndexOf("：") + 1);
@@ -377,6 +531,19 @@ namespace MoegirlSpider
                 String.IsNullOrWhiteSpace(ProductionCompany.Text) ||
                 String.IsNullOrWhiteSpace(PremiereDate.Text))
             {
+                CustomizableMessageBox.MessageBox.Show(Prefab.GetPropertiesSetter(PropertiesSetterName.Black), "名字, 介绍, 工作人员, 声优表, 制作公司, 首播日期不能为空");
+                return false;
+            }
+
+            if (!int.TryParse(TotalEpisodes.Text, out _))
+            {
+                CustomizableMessageBox.MessageBox.Show(Prefab.GetPropertiesSetter(PropertiesSetterName.Black), "集数不能为非数字");
+                return false;
+            }
+
+            if (!DateTime.TryParse(PremiereDate.Text, out _))
+            {
+                CustomizableMessageBox.MessageBox.Show(Prefab.GetPropertiesSetter(PropertiesSetterName.Black), "日期格式不对");
                 return false;
             }
 

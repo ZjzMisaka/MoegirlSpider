@@ -6,93 +6,104 @@
         xmlns:local="clr-namespace:MoegirlSpider"
         mc:Ignorable="d"
         Title="MainWindow" Height="800" Width="1300">
-    <Grid Name="MainGrid">
+    <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="auto"></RowDefinition>
-            <RowDefinition Height="auto"></RowDefinition>
-            <RowDefinition Height="auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
-            <RowDefinition Height="auto"></RowDefinition>
-            <RowDefinition Height="auto"></RowDefinition>
-            <RowDefinition Height="auto"></RowDefinition>
-            <RowDefinition Height="auto"></RowDefinition>
-            <RowDefinition Height="auto"></RowDefinition>
-            <RowDefinition Height="auto"></RowDefinition>
-            <RowDefinition Height="auto"></RowDefinition>
-            <RowDefinition Height="auto"></RowDefinition>
-            <RowDefinition Height="auto"></RowDefinition>
-            <RowDefinition Height="auto"></RowDefinition>
-            <RowDefinition Height="auto"></RowDefinition>
-            <RowDefinition Height="auto"></RowDefinition>
-            <RowDefinition Height="auto"></RowDefinition>
-            <RowDefinition Height="auto"></RowDefinition>
-            <RowDefinition Height="auto"></RowDefinition>
             <RowDefinition Height="auto"></RowDefinition>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="100"></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
             <ColumnDefinition></ColumnDefinition>
         </Grid.ColumnDefinitions>
+        <ScrollViewer Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4">
+            <Grid Name="MainGrid">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition Height="auto"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100"></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                </Grid.ColumnDefinitions>
 
-        <TextBlock Grid.Row="0" Grid.Column="0" Text="Name"></TextBlock>
-        <TextBox Grid.Row="0" Grid.Column="1" Name="Name" Height="20" BorderBrush="Black"></TextBox>
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="Name"></TextBlock>
+                <TextBox Grid.Row="0" Grid.Column="1" Name="Name" Height="20" BorderBrush="Black"></TextBox>
 
-        <TextBlock Grid.Row="1" Grid.Column="0" Text="OriginalName"></TextBlock>
-        <TextBox Grid.Row="1" Grid.Column="1" Name="OriginalName" Height="20" BorderBrush="Black"></TextBox>
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="OriginalName"></TextBlock>
+                <TextBox Grid.Row="1" Grid.Column="1" Name="OriginalName" Height="20" BorderBrush="Black"></TextBox>
 
-        <TextBlock Grid.Row="2" Grid.Column="0" Text="Type"></TextBlock>
-        <ComboBox Grid.Row="2" Grid.Column="1" Name="Type" Height="20" BorderBrush="Black">
-            <ComboBoxItem Content="TV版"></ComboBoxItem>
-            <ComboBoxItem Content="剧场版"></ComboBoxItem>
-            <ComboBoxItem Content="OVA"></ComboBoxItem>
-            <ComboBoxItem Content="OAD"></ComboBoxItem>
-            <ComboBoxItem Content="WEB"></ComboBoxItem>
-        </ComboBox>
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="Type"></TextBlock>
+                <ComboBox Grid.Row="2" Grid.Column="1" Name="Type" Height="20" BorderBrush="Black">
+                    <ComboBoxItem Content="TV版"></ComboBoxItem>
+                    <ComboBoxItem Content="剧场版"></ComboBoxItem>
+                    <ComboBoxItem Content="OVA"></ComboBoxItem>
+                    <ComboBoxItem Content="OAD"></ComboBoxItem>
+                    <ComboBoxItem Content="WEB"></ComboBoxItem>
+                </ComboBox>
 
-        <TextBlock Grid.Row="3" Grid.Column="0" Text="Introduction"></TextBlock>
-        <TextBox Grid.Row="3" Grid.Column="1" Name="Introduction" VerticalAlignment="Stretch" TextWrapping="Wrap" AcceptsReturn="True" BorderBrush="Black"></TextBox>
+                <TextBlock Grid.Row="3" Grid.Column="0" Text="Introduction"></TextBlock>
+                <TextBox Grid.Row="3" Grid.Column="1" Name="Introduction" MinHeight="60" VerticalAlignment="Stretch" TextWrapping="Wrap" AcceptsReturn="True" BorderBrush="Black"></TextBox>
 
-        <TextBlock Grid.Row="4" Grid.Column="0" Text="Staff"></TextBlock>
-        <TextBox Grid.Row="4" Grid.Column="1" Name="Staff" Height="60" TextWrapping="Wrap" AcceptsReturn="True" BorderBrush="Black"></TextBox>
+                <TextBlock Grid.Row="4" Grid.Column="0" Text="Staff"></TextBlock>
+                <TextBox Grid.Row="4" Grid.Column="1" Name="Staff" Height="60" TextWrapping="Wrap" AcceptsReturn="True" BorderBrush="Black"></TextBox>
 
-        <TextBlock Grid.Row="5" Grid.Column="0" Text="Cast"></TextBlock>
-        <TextBox Grid.Row="5" Grid.Column="1" Name="Cast" Height="60" TextWrapping="Wrap" AcceptsReturn="True" BorderBrush="Black"></TextBox>
+                <TextBlock Grid.Row="5" Grid.Column="0" Text="Cast"></TextBlock>
+                <TextBox Grid.Row="5" Grid.Column="1" Name="Cast" Height="60" TextWrapping="Wrap" AcceptsReturn="True" BorderBrush="Black"></TextBox>
 
-        <TextBlock Grid.Row="6" Grid.Column="0" Text="TotalEpisodes"></TextBlock>
-        <TextBox Grid.Row="6" Grid.Column="1" Name="TotalEpisodes" Height="20" BorderBrush="Black"></TextBox>
-        
-        <TextBlock Grid.Row="7" Grid.Column="0" Text="ProductionCompany"></TextBlock>
-        <TextBox Grid.Row="7" Grid.Column="1" Name="ProductionCompany" Height="20" BorderBrush="Black"></TextBox>
+                <TextBlock Grid.Row="6" Grid.Column="0" Text="TotalEpisodes"></TextBlock>
+                <TextBox Grid.Row="6" Grid.Column="1" Name="TotalEpisodes" Height="20" BorderBrush="Black"></TextBox>
 
-        <TextBlock Grid.Row="8" Grid.Column="0" Text="OpeningSong"></TextBlock>
-        <TextBox Grid.Row="8" Grid.Column="1" Name="OpeningSong" Height="60" TextWrapping="Wrap" AcceptsReturn="True" BorderBrush="Black"></TextBox>
+                <TextBlock Grid.Row="7" Grid.Column="0" Text="ProductionCompany"></TextBlock>
+                <TextBox Grid.Row="7" Grid.Column="1" Name="ProductionCompany" Height="20" BorderBrush="Black"></TextBox>
 
-        <TextBlock Grid.Row="9" Grid.Column="0" Text="EndingSong"></TextBlock>
-        <TextBox Grid.Row="9" Grid.Column="1" Name="EndingSong" Height="60" TextWrapping="Wrap" AcceptsReturn="True" BorderBrush="Black"></TextBox>
+                <TextBlock Grid.Row="8" Grid.Column="0" Text="OpeningSong"></TextBlock>
+                <TextBox Grid.Row="8" Grid.Column="1" Name="OpeningSong" MinHeight="60" TextWrapping="Wrap" AcceptsReturn="True" BorderBrush="Black"></TextBox>
 
-        <TextBlock Grid.Row="10" Grid.Column="0" Text="CharactorSong"></TextBlock>
-        <TextBox Grid.Row="10" Grid.Column="1" Name="CharactorSong" Height="60" TextWrapping="Wrap" AcceptsReturn="True" BorderBrush="Black"></TextBox>
+                <TextBlock Grid.Row="9" Grid.Column="0" Text="EndingSong"></TextBlock>
+                <TextBox Grid.Row="9" Grid.Column="1" Name="EndingSong" MinHeight="60" TextWrapping="Wrap" AcceptsReturn="True" BorderBrush="Black"></TextBox>
 
-        <TextBlock Grid.Row="11" Grid.Column="0" Text="InsertSong"></TextBlock>
-        <TextBox Grid.Row="11" Grid.Column="1" Name="InsertSong" Height="60" TextWrapping="Wrap" AcceptsReturn="True" BorderBrush="Black"></TextBox>
+                <TextBlock Grid.Row="10" Grid.Column="0" Text="CharactorSong"></TextBlock>
+                <TextBox Grid.Row="10" Grid.Column="1" Name="CharactorSong" MinHeight="60" TextWrapping="Wrap" AcceptsReturn="True" BorderBrush="Black"></TextBox>
 
-        <TextBlock Grid.Row="12" Grid.Column="0" Text="Achievement"></TextBlock>
-        <TextBox Grid.Row="12" Grid.Column="1" Name="Achievement" Height="60" TextWrapping="Wrap" AcceptsReturn="True" BorderBrush="Black"></TextBox>
+                <TextBlock Grid.Row="11" Grid.Column="0" Text="InsertSong"></TextBlock>
+                <TextBox Grid.Row="11" Grid.Column="1" Name="InsertSong" MinHeight="60" TextWrapping="Wrap" AcceptsReturn="True" BorderBrush="Black"></TextBox>
 
-        <TextBlock Grid.Row="13" Grid.Column="0" Text="Other"></TextBlock>
-        <TextBox Grid.Row="13" Grid.Column="1" Name="Other" Height="60" TextWrapping="Wrap" AcceptsReturn="True" BorderBrush="Black"></TextBox>
+                <TextBlock Grid.Row="12" Grid.Column="0" Text="Achievement"></TextBlock>
+                <TextBox Grid.Row="12" Grid.Column="1" Name="Achievement" Height="60" TextWrapping="Wrap" AcceptsReturn="True" BorderBrush="Black"></TextBox>
 
-        <TextBlock Grid.Row="14" Grid.Column="0" Text="PremiereDate"></TextBlock>
-        <TextBox Grid.Row="14" Grid.Column="1" Name="PremiereDate" Height="20" BorderBrush="Black" TextChanged="PremiereDate_TextChanged"></TextBox>
+                <TextBlock Grid.Row="13" Grid.Column="0" Text="Other"></TextBlock>
+                <TextBox Grid.Row="13" Grid.Column="1" Name="Other" Height="60" TextWrapping="Wrap" AcceptsReturn="True" BorderBrush="Black"></TextBox>
 
-        <TextBlock Grid.Row="15" Grid.Column="0" Text="TitleImgExternalLink"></TextBlock>
-        <TextBox Grid.Row="15" Grid.Column="1" Name="TitleImgExternalLink" Height="20" BorderBrush="Black"></TextBox>
+                <TextBlock Grid.Row="14" Grid.Column="0" Text="PremiereDate"></TextBlock>
+                <TextBox Grid.Row="14" Grid.Column="1" Name="PremiereDate" Height="20" BorderBrush="Black" TextChanged="PremiereDate_TextChanged"></TextBox>
 
-        <TextBlock Grid.Row="16" Grid.Column="0" Text="OfficialWebsite"></TextBlock>
-        <TextBox Grid.Row="16" Grid.Column="1" Name="OfficialWebsite" Height="20" BorderBrush="Black"></TextBox>
+                <TextBlock Grid.Row="15" Grid.Column="0" Text="TitleImgExternalLink"></TextBlock>
+                <TextBox Grid.Row="15" Grid.Column="1" Name="TitleImgExternalLink" Height="20" BorderBrush="Black"></TextBox>
 
-        <Button Grid.Row="17" Grid.ColumnSpan="2" Name="Start" Click="Start_Click" Content="Next" VerticalAlignment="Bottom"></Button>
-        <Button Grid.Row="18" Grid.ColumnSpan="2" Name="Skip" Content="Skip" VerticalAlignment="Bottom" Click="Skip_Click"></Button>
-        <Button Grid.Row="19" Grid.ColumnSpan="2" Name="Open" Content="Open" VerticalAlignment="Bottom" Click="Open_Click"></Button>
+                <TextBlock Grid.Row="16" Grid.Column="0" Text="OfficialWebsite"></TextBlock>
+                <TextBox Grid.Row="16" Grid.Column="1" Name="OfficialWebsite" Height="20" BorderBrush="Black"></TextBox>
+            </Grid>
+        </ScrollViewer>
+        <TextBlock Name="Status"></TextBlock>
+        <Button Grid.Row="1" Grid.Column="1" Name="Start" Click="Start_Click" Content="Next" VerticalAlignment="Bottom"></Button>
+        <Button Grid.Row="1" Grid.Column="2" Name="Skip" Content="Skip" VerticalAlignment="Bottom" Click="Skip_Click"></Button>
+        <Button Grid.Row="1" Grid.Column="3" Name="Open" Content="Open" VerticalAlignment="Bottom" Click="Open_Click"></Button>
     </Grid>
 </Window>
