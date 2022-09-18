@@ -64,7 +64,7 @@ namespace MoegirlSpider
             try
             {
                 conn.Open();
-                string sql = "";
+                string sql = "" + Name.Text + "';";
                 MySqlCommand cmd = new MySqlCommand(sql, conn);
                 MySqlDataReader rdr = cmd.ExecuteReader();
                 if (rdr.Read())
@@ -119,7 +119,7 @@ namespace MoegirlSpider
                 try
                 {
                     conn.Open();
-                    string sql = "");
+                    string sql = "" + ConnectValues("@P1", "@P2", "@P3", "@P4", "@P5", "@P6", "@P7", "@P8", "@P9", "@P10", "@P11", "@P12", "@P13", "@P14", "@P15", "@P16", "@P17");
                     MySqlCommand cmd = new MySqlCommand(sql, conn);
                     cmd.Parameters.AddWithValue("@P1", EmptyToNull(Name.Text));
                     cmd.Parameters.AddWithValue("@P2", EmptyToNull(OriginalName.Text));
@@ -288,7 +288,7 @@ namespace MoegirlSpider
                             CustomizableMessageBox.MessageBox.CloseNow();
                             string name = GetNextName();
                             if (String.IsNullOrWhiteSpace(name))
-                            {w
+                            {
                                 return;
                             }
                             if(CheckDbExist(name))
